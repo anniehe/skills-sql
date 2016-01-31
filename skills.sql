@@ -3,23 +3,128 @@
 
 -- 1. Select all columns for all brands in the Brands table.
 
+cars=# SELECT * FROM brands;
+ id |    name    | founded |            headquarters            | discontinued 
+----+------------+---------+------------------------------------+--------------
+  1 | Ford       |    1903 | Dearborn, MI                       |             
+  2 | Chrysler   |    1925 | Auburn Hills, Michigan             |             
+  3 | Citroën    |    1919 | Saint-Ouen, France                 |             
+  4 | Hillman    |    1907 | Ryton-on-Dunsmore, England         |         1981
+  5 | Chevrolet  |    1911 | Detroit, Michigan                  |             
+  6 | Cadillac   |    1902 | New York City, NY                  |             
+  7 | BMW        |    1916 | Munich, Bavaria, Germany           |             
+  8 | Austin     |    1905 | Longbridge, England                |         1987
+  9 | Fairthorpe |    1954 | Chalfont St Peter, Buckinghamshire |         1976
+ 10 | Studebaker |    1852 | South Bend, Indiana                |         1967
+ 11 | Pontiac    |    1926 | Detroit, MI                        |         2010
+ 12 | Buick      |    1903 | Detroit, MI                        |             
+ 13 | Rambler    |    1901 | Kenosha, Washington                |         1969
+ 14 | Plymouth   |    1928 | Auburn Hills, Michigan             |         2001
+ 15 | Tesla      |    2003 | Palo Alto, CA                      |             
+(15 rows)
+
+
 -- 2. Select all columns for all car models made by Pontiac in the Models table.
+
+cars=# SELECT * FROM models WHERE brand_name = 'Pontiac';
+ id | year | brand_name |    name    
+----+------+------------+------------
+ 25 | 1961 | Pontiac    | Tempest
+ 27 | 1962 | Pontiac    | Grand Prix
+ 36 | 1963 | Pontiac    | Grand Prix
+ 42 | 1964 | Pontiac    | GTO
+ 43 | 1964 | Pontiac    | LeMans
+ 44 | 1964 | Pontiac    | Bonneville
+ 45 | 1964 | Pontiac    | Grand Prix
+(7 rows)
+
 
 -- 3. Select the brand name and model 
 --    name for all models made in 1964 from the Models table.
+
+cars=# SELECT brand_name, name AS model_name FROM models WHERE year = 1964;
+ brand_name | model_name  
+------------+-------------
+ Chevrolet  | Corvette
+ Ford       | Mustang
+ Ford       | Galaxie
+ Pontiac    | GTO
+ Pontiac    | LeMans
+ Pontiac    | Bonneville
+ Pontiac    | Grand Prix
+ Plymouth   | Fury
+ Studebaker | Avanti
+ Austin     | Mini Cooper
+(10 rows)
 
 
 -- 4. Select the model name, brand name, and headquarters for the Ford Mustang 
 --    from the Models and Brands tables.
 
+cars=# SELECT models.name AS model_name, brand_name, headquarters 
+cars=# FROM models JOIN brands ON (models.brand_name=brands.name) 
+cars=# WHERE brand_name='Ford' AND models.name='Mustang';
+ model_name | brand_name | headquarters 
+------------+------------+--------------
+ Mustang    | Ford       | Dearborn, MI
+(1 row)
+
+
 -- 5. Select all rows for the three oldest brands 
 --    from the Brands table (Hint: you can use LIMIT and ORDER BY).
 
+cars=# SELECT * FROM brands ORDER BY founded LIMIT 3;
+ id |    name    | founded |    headquarters     | discontinued 
+----+------------+---------+---------------------+--------------
+ 10 | Studebaker |    1852 | South Bend, Indiana |         1967
+ 13 | Rambler    |    1901 | Kenosha, Washington |         1969
+  6 | Cadillac   |    1902 | New York City, NY   |             
+(3 rows)
+
+
 -- 6. Count the Ford models in the database (output should be a number).
+
+cars=# SELECT COUNT(*) FROM models WHERE brand_name='Ford';
+ count 
+-------
+     6
+(1 row)
+
 
 -- 7. Select the name of any and all car brands that are not discontinued.
 
+cars=# SELECT name FROM brands WHERE discontinued IS NULL;
+   name    
+-----------
+ Ford
+ Chrysler
+ Citroën
+ Chevrolet
+ Cadillac
+ BMW
+ Buick
+ Tesla
+(8 rows)
+
+
 -- 8. Select rows 15-25 of the DB in alphabetical order by model name.
+
+cars=# SELECT * FROM models ORDER BY name OFFSET 14 LIMIT 11;
+ id | year | brand_name |   name   
+----+------+------------+----------
+ 28 | 1962 | Chevrolet  | Corvette
+ 10 | 1956 | Chevrolet  | Corvette
+ 17 | 1959 | Chevrolet  | Corvette
+  8 | 1955 | Chevrolet  | Corvette
+  6 | 1954 | Chevrolet  | Corvette
+ 20 | 1960 | Chevrolet  | Corvette
+ 26 | 1961 | Chevrolet  | Corvette
+ 39 | 1964 | Chevrolet  | Corvette
+ 38 | 1963 | Chevrolet  | Corvette
+  5 | 1953 | Chevrolet  | Corvette
+ 34 | 1963 | Ford       | E-Series
+(11 rows)
+
 
 -- 9. Select the brand, name, and year the model's brand was 
 --    founded for all of the models from 1960. Include row(s)
@@ -27,6 +132,16 @@
 --    (The year the brand was founded should be NULL if 
 --    the brand is not in the Brands table.)
 
+cars=# SELECT brand_name, models.name AS model_name, founded
+cars-# FROM models LEFT JOIN brands ON (models.brand_name=brands.name)
+cars-# WHERE year=1960;
+ brand_name | model_name | founded 
+------------+------------+---------
+ Chevrolet  | Corvette   |    1911
+ Chevrolet  | Corvair    |    1911
+ Fairthorpe | Rockette   |    1954
+ Fillmore   | Fillmore   |        
+(4 rows)
 
 
 -- Part 2: Change the following queries according to the specifications. 
